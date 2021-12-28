@@ -13,6 +13,9 @@ public class Main {
         String topicName = null;
         String key = null, value = null;
         int records=0, recordSize=0;
+        byte[] empty= new byte[980];
+        String em = new String(empty);
+
         Properties props = new Properties();
 
         for(i = 0 ; i < argsSize ; i++){
@@ -35,11 +38,13 @@ public class Main {
         Configuration conf = new Configuration();
         conf.config(props);
 
+
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (i = 0; i < records; i++) {
             key = String.format("key-%06d", i);
             value = String.format("value-%06d",i);
-            //producer.send(new ProducerRecord<String, String>(topicName, null,key, value,));
+            value = value + em;
+            producer.send(new ProducerRecord<String, String>(topicName,key, value));
         }
         producer.close();
 
