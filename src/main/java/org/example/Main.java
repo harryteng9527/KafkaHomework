@@ -1,10 +1,7 @@
 package org.example;
 import org.apache.kafka.clients.producer.*;
 
-import java.util.ListIterator;
 import java.util.Properties;
-
-import static java.lang.String.format;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,8 +10,6 @@ public class Main {
         String topicName = null;
         String key = null, value = null;
         int records=0, recordSize=0;
-        byte[] empty= new byte[980];
-        String em = new String(empty);
 
         Properties props = new Properties();
 
@@ -38,6 +33,8 @@ public class Main {
         Configuration conf = new Configuration();
         conf.config(props);
 
+        byte[] empty= new byte[recordSize];
+        String em = new String(empty);
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         for (i = 0; i < records; i++) {
@@ -48,6 +45,5 @@ public class Main {
         }
         producer.close();
 
-        System.out.println("walawalaa");
     }
 }
