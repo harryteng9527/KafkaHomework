@@ -1,47 +1,42 @@
 package org.example;
 import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.header.Header;
 
+import java.util.List;
 import java.util.Properties;
 
 public class Main {
     public static void main(String[] args) {
-        int argsSize = args.length;
         int i = 0;
-        String topicName = null;
         String key = null, value = null;
-        int records=0, recordSize=0;
 
         Properties props = new Properties();
+        Argument argument = Argument.parse(args);
 
-        for(i = 0 ; i < argsSize ; i++){
-            switch (args[i]) {
-                case "--brokers":
-                    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, args[++i]);
-                    break;
-                case "--topic":
-                    topicName = args[++i];
-                    break;
-                case "--records":
-                    records = Integer.parseInt(args[++i]);
-                    break;
-                case "--recordSize":
-                    recordSize = Integer.parseInt(args[++i]);
-                    break;
+        Header data = new Header() {
+            @Override
+            public String key() {
+                return "";
             }
-        }
 
-        Configuration conf = new Configuration();
-        conf.config(props);
+            @Override
+            public byte[] value() {
+                return new byte[argument.recordSize];
+            }
+        };
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,argument.bootstrapServer);
 
-        byte[] empty= new byte[recordSize];
-        String em = new String(empty);
+        Configuration.config(props);
 
         Producer<String, String> producer = new KafkaProducer<>(props);
-        for (i = 0; i < records; i++) {
+        for (i = 0; i < argument.records; i++) {
             key = String.format("key-%06d", i);
             value = String.format("value-%06d",i);
-            value = value + em;
-            producer.send(new ProducerRecord<String, String>(topicName,key, value));
+            producer.send(new ProducerRecord<String, String>(argument.topicName,
+                    null,
+                    key,
+                    value,
+                    List.of(data)));
         }
         producer.close();
 
