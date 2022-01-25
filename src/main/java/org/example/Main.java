@@ -27,18 +27,17 @@ public class Main {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,argument.bootstrapServer);
 
         Configuration.config(props);
-
+        //Multithreading mulProducer = new Multithreading(props, argument);
         Producer<String, String> producer = new KafkaProducer<>(props);
+        //mulProducer.start();
         for (i = 0; i < argument.records; i++) {
-            key = String.format("key-%06d", i);
-            value = String.format("value-%06d",i);
+            key = String.format("key-%10d", i);
+            value = String.format("value-%10d", i);
             producer.send(new ProducerRecord<String, String>(argument.topicName,
-                    null,
-                    key,
-                    value,
-                    List.of(data)));
+                              key,
+                              value));
         }
         producer.close();
-
+        System.out.println("Finish producing records!");
     }
 }

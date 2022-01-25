@@ -11,5 +11,6 @@ public class Configuration {
         prop.put(ProducerConfig.LINGER_MS_CONFIG,10);
         prop.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringSerializer");
         prop.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringSerializer");
+        prop.put(ProducerConfig.COMPRESSION_TYPE_CONFIG,"lz4");
     }
 }
